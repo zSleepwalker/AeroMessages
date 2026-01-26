@@ -304,6 +304,17 @@ namespace AeroMessages.GSS.V66
         public byte Unk6;
     }
 
+    public enum ForcedMovementType
+    {
+        Bullrush = 6,
+        Immobilize = 7,
+        FallToGround = 9,
+        OrientationLock = 10,
+        TeleportAndImmobilize = 11,
+        TurnToPositionOverTime = 12,
+        Tether = 13,
+    }
+
     [AeroBlock]
     public struct ForcedMovementData
     {
@@ -330,28 +341,28 @@ namespace AeroMessages.GSS.V66
         public ForcedMovementType5Params Params5;
 
         [AeroIf(nameof(Type), 0x06)]
-        public ForcedMovementType6Params Params6; // Uses bullrush cvars
+        public Bullrush Bullrush; // Uses bullrush cvars
 
         [AeroIf(nameof(Type), 0x07)]
-        public ForcedMovementType7Params Params7;
+        public Immobilize Immobilize;
 
         [AeroIf(nameof(Type), 0x08)]
         public ForcedMovementType8Params Params8; // Uses grapple cvars
 
         [AeroIf(nameof(Type), 0x09)]
-        public ForcedMovementType9Params Params9; // Uses "tweak.PlayerGravity" cvar
+        public FallToGround FallToGround; // Uses "tweak.PlayerGravity" cvar
 
         [AeroIf(nameof(Type), 0x0a)]
-        public ForcedMovementType10Params Params10;
+        public OrientationLock OrientationLock;
 
         [AeroIf(nameof(Type), 0x0b)]
-        public ForcedMovementType11Params Params11;
+        public TeleportAndImmobilize TeleportAndImmobilize;
 
         [AeroIf(nameof(Type), 0x0c)]
-        public ForcedMovementType12Params Params12;
+        public TurnToPositionOverTime TurnToPositionOverTime;
 
         [AeroIf(nameof(Type), 0x0d)]
-        public ForcedMovementType13Params Params13;
+        public Tether Tether;
     }
 
     [AeroBlock]
@@ -368,11 +379,12 @@ namespace AeroMessages.GSS.V66
     {
         public Vector3 Unk1;
         public Vector3 Unk2;
-        public uint Time1;
-        public uint Time2;
+        public uint StartTime;
+        public uint EndTime;
         public float Unk5;
         public byte Unk6;
-        public byte Unk7;
+        /// 2: character rotates towards Unk1 over duration
+        public byte OrientationType;
     }
 
     [AeroBlock]
@@ -394,9 +406,9 @@ namespace AeroMessages.GSS.V66
     public struct ForcedMovementType4Params
     {
         public Vector3 Unk1;
-        public uint Time1;
-        public uint Time2;
-        public float Unk4;
+        public uint StartTime;
+        public uint EndTime;
+        public float Speed;
         public Vector3 Unk5;
     }
 
@@ -410,12 +422,19 @@ namespace AeroMessages.GSS.V66
     }
 
     [AeroBlock]
-    public struct ForcedMovementType6Params
+    public struct Bullrush
     {
-        public Vector3 Unk1;
-        public uint Time1;
-        public uint Time2;
-        public float Extra;
+        public Vector3 Velocity;
+        public uint StartTime;
+        public uint EndTime;
+        public float Speed;
+    }
+
+    [AeroBlock]
+    public struct Immobilize
+    {
+        public uint StartTime;
+        public uint EndTime;
     }
 
     [AeroBlock]
@@ -428,57 +447,50 @@ namespace AeroMessages.GSS.V66
     }
 
     [AeroBlock]
-    public struct ForcedMovementType9Params
+    public struct FallToGround
     {
-        public uint Time1;
-        public uint Time2;
-        public float Unk1;
-        public Vector3 Unk2;
+        public uint StartTime;
+        public uint EndTime;
+        public float GroundHeight;
+        public Vector3 BodyOrientation;
     }
 
     [AeroBlock]
-    public struct ForcedMovementType10Params
+    public struct OrientationLock
     {
-        public uint Time1;
-        public uint Time2;
-        public Vector3 Unk1;
-        public float Unk2;
+        public uint StartTime;
+        public uint EndTime;
+        public Vector3 LookDirection;
+        public float MaxAimAngleRad;
         public float Unk3;
         public byte Unk4;
     }
 
     [AeroBlock]
-    public struct ForcedMovementType11Params
+    public struct TeleportAndImmobilize
     {
-        public uint Time1;
-        public uint Time2;
-        public Vector3 Unk1;
-        public Quaternion Unk2;
+        public uint StartTime;
+        public uint EndTime;
+        public Vector3 Position;
+        public Quaternion Orientation;
     }
 
     [AeroBlock]
-    public struct ForcedMovementType12Params
+    public struct TurnToPositionOverTime
     {
-        public Vector3 Unk1;
-        public uint Time1;
-        public uint Time2;
+        public Vector3 Position;
+        public uint StartTime;
+        public uint EndTime;
     }
 
     [AeroBlock]
-    public struct ForcedMovementType7Params
+    public struct Tether
     {
-        public uint Time1;
-        public uint Time2;
-    }
-
-    [AeroBlock]
-    public struct ForcedMovementType13Params
-    {
-        public uint Time1;
-        public uint Time2;
+        public uint StartTime;
+        public uint EndTime;
         public ulong Unk1;
         public Vector3 Unk2;
-        public float Unk3;
+        public float MaxRange;
         public float Unk4;
         public float Unk5;
         public float Unk6;
